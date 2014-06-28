@@ -5,3 +5,13 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+Word.delete_all
+counter = 0
+until counter == 500
+  word = SecureRandom.urlsafe_base64 8
+
+  unless Word.find_by_word_str word
+    Word.create(word_str: word)
+    counter += 1
+  end
+end

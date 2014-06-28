@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Word str:
+  = @word.word_str
+%p
+  %b Num tested:
+  = @word.num_tested
+%p
+  %b Num correct:
+  = @word.num_correct
+%p
+  %b Num correct seq:
+  = @word.num_correct_seq
+%p
+  %b Num wrong:
+  = @word.num_wrong
+%p
+  %b First tested:
+  = @word.first_tested
+%p
+  %b Last tested:
+  = @word.last_tested
+
+= link_to 'Edit', edit_word_path(@word)
+\|
+= link_to 'Back', words_path

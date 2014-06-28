@@ -1,0 +1,31 @@
+= form_for @word do |f|
+  - if @word.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@word.errors.count, "error")} prohibited this word from being saved:"
+      %ul
+        - @word.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :word_str
+    = f.text_field :word_str
+  .field
+    = f.label :num_tested
+    = f.number_field :num_tested
+  .field
+    = f.label :num_correct
+    = f.number_field :num_correct
+  .field
+    = f.label :num_correct_seq
+    = f.number_field :num_correct_seq
+  .field
+    = f.label :num_wrong
+    = f.number_field :num_wrong
+  .field
+    = f.label :first_tested
+    = f.datetime_select :first_tested
+  .field
+    = f.label :last_tested
+    = f.datetime_select :last_tested
+  .actions
+    = f.submit 'Save'
