@@ -15,5 +15,6 @@
 //= require jquery_ujs
 //= require jquery.easing.min
 //= requier jquery.easypiechart.min
+//= require jquery_ujs
 //= require turbolinks
 //= require_tree .
