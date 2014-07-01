@@ -1,0 +1,15 @@
+.col-md-8.col-md-offset-2
+  %h1 Your responses
+
+  %table.table.table-striped.table-bordered.table-condensed
+    %thead
+      %tr
+        %td
+          %b Word
+        %td
+          %b Result
+    %tbody
+      - @answers.each do |answer|
+        %tr
+          %td= answer.word.word_str
+          %td= humanize answer.answered_correctly

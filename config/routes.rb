@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       get :test
       get :question
       post :answer
+      get :answer_sheet
     end
   end
 

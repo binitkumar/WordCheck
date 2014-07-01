@@ -8,32 +8,24 @@ class WordsController < ApplicationController
     @words = Word.all
   end
 
-  def question
+  def test
+    @page = params[:page].nil? ? 1 : params[:page].to_i
+    @question = Word.question_set(@page)
+
     seq_count = current_user.user_responses.count
-    if seq_count <= 10 
-      question_set = Word.question_set 
-      render json: question_set
-    else
-      correct_count = current_user.user_responses.where(answered_correctly: true).count
-      seq_per = (( seq_count.to_f / 10.to_f ) * 100 ).to_i
-      correct_per = (( correct_count.to_f / seq_count.to_f ) * 100 ).to_i
-      answers = current_user.user_responses.collect{|x| [x.word.word_str, x.answered_correctly] }
-      render json: {answers: answers, seq_percentage: seq_per, correct_percentage: correct_per}
-    end
+    correct_count = current_user.user_responses.where(answered_correctly: true).count
+
+    @seq_per = (( seq_count.to_f / 10.to_f ) * 100 ).to_i
+    @correct_per = current_user.user_responses.count != 0 ? (( correct_count.to_f / seq_count.to_f ) * 100 ).to_i : 0
   end
 
   def answer
     question = params[:question]
     answer   = params[:answer]
+    page     = params[:page].to_i
 
     word = Word.find_by_word_str question
-    correct_answer = false 
-    if question == answer
-      word.correct_answer_increment
-      correct_answer = true
-    else
-      word.wrong_answer_increment
-    end
+    correct_answer = word.mark_answer(answer)
 
     user_resp = UserResponse.create(
       user_id: current_user.id,
@@ -41,20 +33,16 @@ class WordsController < ApplicationController
       answered_correctly: correct_answer 
     )    
 
-    seq_count = current_user.user_responses.count
- 
-    correct_count = current_user.user_responses.where(answered_correctly: true).count
-  
-    seq_per = (( seq_count.to_f / 10.to_f ) * 100 ).to_i
-    correct_per = (( correct_count.to_f / seq_count.to_f ) * 100 ).to_i
-    mastered = word.user_responses.where(answered_correctly: true, user_id: current_user.id).count > 2
-    
-    if seq_count <= 10 
-      render json: {seq_percentage: seq_per, correct_percentage: correct_per, mastered: mastered}
+    #@mastered = word.user_responses.where(answered_correctly: true, user_id: current_user.id).count > 2
+    if current_user.user_responses.count < 10
+      redirect_to "/words/test?page=#{page + 1}"
     else
-      answers = current_user.user_responses.collect{|x| [x.word.word_str, x.answered_correctly] }
-      render json: {answers: answers, seq_percentage: seq_per, correct_percentage: correct_per}
+      redirect_to "/words/answer_sheet"
     end
+  end
+
+  def answer_sheet
+     @answers = current_user.user_responses
   end
 
   # GET /words/1

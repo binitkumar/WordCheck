@@ -1,14 +1,14 @@
 :css
   .question-block {
-    border: 1px solid black;
     margin-left: 30px;
-    margin-top: 50px;
+    margin-top: 200px;
+    font-size: 27px;
   }
   .question-block div{
     margin: 10px;
   }
-  #chart{
-    margin-top: 50px;
+  .chart{
+    margin-top: 200px;
   }
 
   .percent {
@@ -25,90 +25,59 @@
     font-size: .8em;
   }
 :javascript
-  function load_question(){
-    $.get("/words/question", function(data){
-      if(data.answers == undefined){
-        question = $.map(data, function(element,index) {return index})[0]
-        $("#question").html(question)
-        $("#opt1").html(data[question][0].word_str) 
-        $("#opt2").html(data[question][1].word_str) 
-        $("#opt3").html(data[question][2].word_str) 
-        $("#opt4").html(data[question][3].word_str)
-      }else{
-        table_string = "<table class='table'>"
-        $.each(data.answers, function(index, answer ){
-          table_string = table_string + "<tr><td>"+ answer[0]+"</td><td>" + answer[1] + "</td></tr>"
-        })    
-        table_string = table_string + "</table>"
-        $("#results").html(table_string)
-        $(".question-block").hide();
-
-      } 
-    })
-  }
-  function mark_answer(answer){
-    question = $("#question").text()
-    
-    res = {} 
-    res['question'] = question
-    res['answer'] = answer
-    console.log(res)
-    $.post("/words/answer", res, function(data){
-      $('.chart').data('easyPieChart').update(data.correct_percentage);  
-      $( "#status_bar" ).progressbar({ value: data.seq_percentage })
-      if(data.answers == undefined){
-        load_question();
-      }else{
-        table_string = "<table class='table'>"
-        $.each(data.answers, function(index, answer ){
-          table_string = table_string + "<tr><td>"+ answer[0]+"</td><td>" + answer[1] + "</td></tr>"
-        })    
-        table_string = table_string + "</table>"
-        $("#results").html(table_string)
-        $(".question-block").hide();
-      }
-    })
-  }
   $(function() {
     var status_bar = $( "#status_bar" ).progressbar({
-      value: 0 
+      value: #{@seq_per}
     });
 
 
     $('.chart').easyPieChart({
       easing: 'easeOutBounce',
       onStep: function(from, to, percent) {
-        $(this.el).find('.percent').text(Math.round(percent));
+        $(this.el).find('.percent').text(Math.round(#{@correct_per}));
       },
       barColor: 'black'
       
     });
     var chart = window.chart = $('.chart').data('easyPieChart');
-    $('.js_update').on('click', function() {
-      chart.update(Math.random()*200-100);
-    });
-
-    load_question();
+    chart.update( #{@correct_per} );
 
   });
-.row
-  .col-md-8
-    #results
-    .question-block
-      %h3#question kslkdjflsdjfsaljlsdjfsldfj slajfsdl       
-      %div
-        %button.btn.btn-mini.btn-success{onclick: "mark_answer($('#opt1').text())"} Option 1
-        %span#opt1
-      %div
-        %button.btn.btn-mini.btn-success{onclick: "mark_answer($('#opt2').text())"} Option 2
-        %span#opt2
-      %div
-        %button.btn.btn-mini.btn-success{onclick: "mark_answer($('#opt3').text())"} Option 3
-        %span#opt3
-      %div
-        %button.btn.btn-mini.btn-success{onclick: "mark_answer($('#opt4').text())"} Option 4
-        %span#opt4
-      #status_bar 
-  .col-md-3
-    .chart{ "data-percent" => 0}
-      .percent
+.container
+  .row
+    .col-md-8.col-md-offset-1
+      #results
+      .question-block
+        %h1#question= @question.keys.first
+        %div
+          = form_tag "/words/answer" do
+            = hidden_field_tag :question, @question.keys.first
+            = hidden_field_tag :page, @page
+            = hidden_field_tag :answer, @question[@question.keys.first][0].word_str
+            = submit_tag "Option 1", class: 'btn btn-mini btn-success'
+            %span#opt1= @question[@question.keys.first][0].word_str
+        %div
+          = form_tag "/words/answer" do
+            = hidden_field_tag :question, @question.keys.first
+            = hidden_field_tag :page, @page
+            = hidden_field_tag :answer, @question[@question.keys.first][1].word_str
+            = submit_tag "Option 2", class: 'btn btn-mini btn-success'
+            %span#opt1= @question[@question.keys.first][1].word_str
+        %div
+          = form_tag "/words/answer" do
+            = hidden_field_tag :question, @question.keys.first
+            = hidden_field_tag :page, @page
+            = hidden_field_tag :answer, @question[@question.keys.first][2].word_str
+            = submit_tag "Option 3", class: 'btn btn-mini btn-success'
+            %span#opt1= @question[@question.keys.first][2].word_str
+        %div
+          = form_tag "/words/answer" do
+            = hidden_field_tag :question, @question.keys.first
+            = hidden_field_tag :page, @page
+            = hidden_field_tag :answer, @question[@question.keys.first][3].word_str
+            = submit_tag "Option 4", class: 'btn btn-mini btn-success'
+            %span#opt1= @question[@question.keys.first][3].word_str
+        #status_bar
+    .col-md-3
+      .chart{ "data-percent" => 0}
+        .percent
