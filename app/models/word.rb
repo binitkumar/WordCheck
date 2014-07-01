@@ -1,6 +1,7 @@
 class Word < ActiveRecord::Base
   self.per_page = 1
 
+  validates_presence_of :word_str
   validates_uniqueness_of :word_str
   has_many :user_responses
   

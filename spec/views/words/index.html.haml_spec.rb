@@ -11,7 +11,7 @@ RSpec.describe "words/index", :type => :view do
         :num_wrong => 4
       ),
       Word.create!(
-        :word_str => "Word Str",
+        :word_str => "Word new Str",
         :num_tested => 1,
         :num_correct => 2,
         :num_correct_seq => 3,
@@ -22,7 +22,8 @@ RSpec.describe "words/index", :type => :view do
 
   it "renders a list of words" do
     render
-    assert_select "tr>td", :text => "Word Str".to_s, :count => 2
+    assert_select "tr>td", :text => "Word Str".to_s, :count => 1
+    assert_select "tr>td", :text => "Word new Str".to_s, :count => 1
     assert_select "tr>td", :text => 1.to_s, :count => 2
     assert_select "tr>td", :text => 2.to_s, :count => 2
     assert_select "tr>td", :text => 3.to_s, :count => 2

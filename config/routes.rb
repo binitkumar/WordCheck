@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :words, except: [:show] do
+  resources :words do
     collection do
       get :test
       get :question

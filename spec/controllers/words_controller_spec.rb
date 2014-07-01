@@ -24,11 +24,11 @@ RSpec.describe WordsController, :type => :controller do
   # Word. As you add validations to Word, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    skip(word_str: 'valid word')
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    skip(word_str: '')
   }
 
   # This should return the minimal set of values that should be in the session
@@ -37,6 +37,8 @@ RSpec.describe WordsController, :type => :controller do
   let(:valid_session) { {} }
 
   describe "GET index" do
+    login_user
+
     it "assigns all words as @words" do
       word = Word.create! valid_attributes
       get :index, {}, valid_session
@@ -45,6 +47,7 @@ RSpec.describe WordsController, :type => :controller do
   end
 
   describe "GET show" do
+    login_user
     it "assigns the requested word as @word" do
       word = Word.create! valid_attributes
       get :show, {:id => word.to_param}, valid_session
@@ -53,6 +56,7 @@ RSpec.describe WordsController, :type => :controller do
   end
 
   describe "GET new" do
+    login_user
     it "assigns a new word as @word" do
       get :new, {}, valid_session
       expect(assigns(:word)).to be_a_new(Word)
@@ -60,6 +64,7 @@ RSpec.describe WordsController, :type => :controller do
   end
 
   describe "GET edit" do
+    login_user
     it "assigns the requested word as @word" do
       word = Word.create! valid_attributes
       get :edit, {:id => word.to_param}, valid_session
@@ -68,6 +73,7 @@ RSpec.describe WordsController, :type => :controller do
   end
 
   describe "POST create" do
+    login_user
     describe "with valid params" do
       it "creates a new Word" do
         expect {
@@ -101,6 +107,7 @@ RSpec.describe WordsController, :type => :controller do
   end
 
   describe "PUT update" do
+    login_user
     describe "with valid params" do
       let(:new_attributes) {
         skip("Add a hash of attributes valid for your model")
@@ -142,6 +149,7 @@ RSpec.describe WordsController, :type => :controller do
   end
 
   describe "DELETE destroy" do
+    login_user
     it "destroys the requested word" do
       word = Word.create! valid_attributes
       expect {

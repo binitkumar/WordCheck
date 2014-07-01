@@ -27,11 +27,11 @@ class WordsController < ApplicationController
     word = Word.find_by_word_str question
     correct_answer = word.mark_answer(answer)
 
-    user_resp = UserResponse.create(
+    user_resp = UserResponse.find_or_create_by(
       user_id: current_user.id,
-      word_id: word.id,
-      answered_correctly: correct_answer 
-    )    
+      word_id: word.id
+    )
+    user_resp.update_attribute(:answered_correctly, correct_answer)
 
     #@mastered = word.user_responses.where(answered_correctly: true, user_id: current_user.id).count > 2
     if current_user.user_responses.count < 10
