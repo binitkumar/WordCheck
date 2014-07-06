@@ -11,10 +11,11 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery.ui.all
 //= require jquery_ujs
 //= require jquery.easing.min
 //= requier jquery.easypiechart.min
 //= require jquery_ujs
+//= require bootstrap
+//= require bootstrap-progressbar
 //= require turbolinks
 //= require_tree .

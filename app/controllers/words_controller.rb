@@ -17,6 +17,7 @@ class WordsController < ApplicationController
 
     @seq_per = (( seq_count.to_f / 10.to_f ) * 100 ).to_i
     @correct_per = current_user.user_responses.count != 0 ? (( correct_count.to_f / seq_count.to_f ) * 100 ).to_i : 0
+    @correct_answer = current_user.user_responses.last.answered_correctly if current_user.user_responses.last
   end
 
   def answer

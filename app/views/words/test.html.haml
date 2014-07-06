@@ -4,8 +4,8 @@
     margin-top: 200px;
     font-size: 27px;
   }
-  .question-block div{
-    margin: 10px;
+  #status_bar{
+    margin-top: 10px;
   }
   .chart{
     margin-top: 200px;
@@ -27,9 +27,15 @@
 :javascript
   $(function() {
     var status_bar = $( "#status_bar" ).progressbar({
-      value: #{@seq_per}
+      warningMarker: #{@seq_per},
+      dangerMarker: 90,
+      maximum: 100,
+      step:  1
     });
 
+    for(i=0; i<= #{@seq_per}; i++){
+      $('#status_bar').progressbar('stepIt');
+    }
 
     $('.chart').easyPieChart({
       easing: 'easeOutBounce',
@@ -46,6 +52,8 @@
 .container
   .row
     .col-md-8.col-md-offset-1
+      %h1{style: 'color: green'}= "Your answer was correct" if @correct_answer
+      %h1{style: 'color: red'}= "Your answer was wrong" if @correct_answer == false
       #results
       .question-block
         %h1#question= @question.keys.first
