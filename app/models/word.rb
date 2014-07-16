@@ -18,22 +18,5 @@ class Word < ActiveRecord::Base
     question_set
   end
 
-  def mark_answer(answer)
-    if self.word_str == answer
-      self.correct_answer_increment
-      return true
-    else
-      self.wrong_answer_increment
-      return false
-    end
-  end
 
-  def correct_answer_increment
-    self.update_attribute(:num_correct, self.num_correct.to_i + 1)
-    self.update_attribute(:num_correct_seq, self.num_wrong.to_i + 1)
-  end
-
-  def wrong_answer_increment
-    self.update_attribute(:num_wrong, self.num_wrong.to_i + 1)
-  end
 end

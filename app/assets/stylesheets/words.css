@@ -1,0 +1,25 @@
+.question-block {
+    margin-left: 30px;
+    margin-top: 115px;
+    font-size: 27px;
+}
+#status_bar{
+    margin-top: 10px;
+}
+.chart{
+    margin-top: 200px;
+}
+
+.percent {
+    display: inline-block;
+    line-height: 113px;
+    margin-left: 14%;
+    margin-top: 0;
+    position: absolute;
+    z-index: 2;
+}
+.percent:after {
+    content: '%';
+    margin-left: 0.1em;
+    font-size: .8em;
+}

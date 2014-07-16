@@ -11,7 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140628181700) do
+ActiveRecord::Schema.define(version: 20140716094608) do
+
+  create_table "temp_words", force: true do |t|
+    t.string   "word_str"
+    t.integer  "num_tested"
+    t.integer  "num_correct"
+    t.integer  "num_correct_seq"
+    t.integer  "num_wrong"
+    t.datetime "first_tested"
+    t.datetime "last_tested"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "word_id"
+  end
 
   create_table "user_responses", force: true do |t|
     t.integer  "word_id"

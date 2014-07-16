@@ -1,0 +1,53 @@
+<script type="text/javascript">
+  var correct_per = <%= @correct_per %>
+  var seq_per     = <%= @seq_per %>
+  var page        = <%= @page %>
+  var redirect_path = '<%= "/words/test/" + ( @page + 1).to_s %>'
+
+</script>
+<div class=container >
+  <div class=row>
+    <div class=" col-md-8 col-md-offset-1" >
+      <h1 id=reportalert>
+      </h1>
+      <div id=results>
+          <div class=question-block>
+            <h1 id=question><%= @question.keys.first %></h1>
+            <%= form_tag answer_words_path, remote: true, update: { success: "cart", failure: "error" }, id: 'question_form' do %>
+              <%= hidden_field_tag :question, @question.keys.first %>
+              <%= hidden_field_tag :page, @page %>
+              <div>
+                <%= submit_tag "Option 1", name: :answer, value: @question[@question.keys.first][0].word_str, class: 'btn btn-mini btn-success' %>
+
+              </div>
+              <div>
+                <%= submit_tag "Option 2", name: :answer, value: @question[@question.keys.first][1].word_str, class: 'btn btn-mini btn-success' %>
+
+              </div>
+              <div>
+                <%= submit_tag "Option 3", name: :answer, value: @question[@question.keys.first][2].word_str, class: 'btn btn-mini btn-success' %>
+
+              </div>
+              <div>
+                <%= submit_tag "Option 4", name: :answer, value: @question[@question.keys.first][3].word_str, class: 'btn btn-mini btn-success' %>
+
+              </div>
+            <% end %>
+            <div id=status_bar></div>
+          </div>
+      </div>
+    </div>
+    <div class=col-md-3>
+      <div class=chart data-percent = 0>
+        <div class=percent></div>
+      </div>
+    <div>
+    <div class=col-md-2>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <%= link_to "Previous", "/words/test?page=#{@page - 1}", class: 'btn btn-primary' %>
+    </div>
+  </div>
+</div>

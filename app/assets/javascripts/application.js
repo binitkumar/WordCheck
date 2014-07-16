@@ -18,4 +18,5 @@
 //= require bootstrap
 //= require bootstrap-progressbar
 //= require turbolinks
+//= require words
 //= require_tree .

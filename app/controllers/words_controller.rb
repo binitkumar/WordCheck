@@ -9,8 +9,20 @@ class WordsController < ApplicationController
   end
 
   def test
-    @page = params[:page].nil? ? 1 : params[:page].to_i
-    @question = Word.question_set(@page)
+    if params[:page].nil?
+      if TempWord.where(user_id: current_user.id).count == 0
+        populate_temp_table
+        UserResponse.where(user_id: current_user.id).delete_all
+        @page =  1
+      else
+        @page = params[:page].nil? ? UserResponse.where(user_id: current_user.id).count : params[:page].to_i
+      end
+    else
+      @page = params[:page].to_i
+    end
+
+
+    @question = TempWord.question_set(current_user.id, @page)
 
     seq_count = current_user.user_responses.count
     correct_count = current_user.user_responses.where(answered_correctly: true).count
@@ -18,14 +30,15 @@ class WordsController < ApplicationController
     @seq_per = (( seq_count.to_f / 10.to_f ) * 100 ).to_i
     @correct_per = current_user.user_responses.count != 0 ? (( correct_count.to_f / seq_count.to_f ) * 100 ).to_i : 0
     @correct_answer = current_user.user_responses.last.answered_correctly if current_user.user_responses.last
+
   end
 
   def answer
-    question = params[:question]
+    question_id = params[:question]
     answer   = params[:answer]
     page     = params[:page].to_i
 
-    word = Word.find_by_word_str question
+    word = TempWord.find_by_word_str question_id
     correct_answer = word.mark_answer(answer)
 
     user_resp = UserResponse.find_or_create_by(
@@ -36,10 +49,19 @@ class WordsController < ApplicationController
 
     #@mastered = word.user_responses.where(answered_correctly: true, user_id: current_user.id).count > 2
     if current_user.user_responses.count < 10
-      redirect_to "/words/test?page=#{page + 1}"
+      @redirect_path  = test_words_path(page: (page + 1))
     else
-      redirect_to "/words/answer_sheet"
+      @redirect_path = answer_sheet_words_path
     end
+
+    seq_count = current_user.user_responses.count
+    correct_count = current_user.user_responses.where(answered_correctly: true).count
+
+    @seq_per = (( seq_count.to_f / 10.to_f ) * 100 ).to_i
+    @correct_per = current_user.user_responses.count != 0 ? (( correct_count.to_f / seq_count.to_f ) * 100 ).to_i : 0
+    @correct_answer = current_user.user_responses.last.answered_correctly if current_user.user_responses.last
+
+    render json: { redirect_path: @redirect_path, seq_per: @seq_per, correct_per: @correct_per, correct_answer: @correct_answer }
   end
 
   def answer_sheet
@@ -101,13 +123,26 @@ class WordsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_word
-      @word = Word.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_word
+    @word = Word.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def word_params
-      params.require(:word).permit(:word_str, :num_tested, :num_correct, :num_correct_seq, :num_wrong, :first_tested, :last_tested)
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def word_params
+    params.require(:word).permit(:word_str, :num_tested, :num_correct, :num_correct_seq, :num_wrong, :first_tested, :last_tested)
+  end
+
+  def populate_temp_table
+    TempWord.where(user_id: current_user.id).delete_all
+    words = Word.all.sample(10)
+    words.each do |word|
+      TempWord.create(
+        user_id: current_user.id,
+        word_str: word.word_str,
+        word_id: word.id
+      )
     end
+  end
+
 end
